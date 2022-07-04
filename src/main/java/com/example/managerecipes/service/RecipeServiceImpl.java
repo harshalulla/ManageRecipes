@@ -1,8 +1,9 @@
-package com.example.managerecipes.service.impl;
+package com.example.managerecipes.service;
 
 import com.example.managerecipes.model.Recipe;
 import com.example.managerecipes.repository.RecipeRepository;
-import com.example.managerecipes.service.RecipeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,37 +23,37 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    Logger logger = LoggerFactory.getLogger(RecipeServiceImpl.class);
+
     public Recipe updateRecipe(Recipe recipe){
 
-        Recipe updatedRecipe = repository.findById(recipe.getId()).get();
+            Recipe updatedRecipe = repository.findById(recipe.getId()).get();
 
-        if(Objects.nonNull(recipe.getRecipeName()) && emptyOrNullOrStringOrBlank(recipe.getRecipeName())){
-            updatedRecipe.setRecipeName(recipe.getRecipeName());
-        }
+            if (Objects.nonNull(recipe.getRecipeName()) && emptyOrNullOrStringOrBlank(recipe.getRecipeName())) {
+                updatedRecipe.setRecipeName(recipe.getRecipeName());
+            }
 
-        if(Objects.nonNull(recipe.getServingCount())){
-            updatedRecipe.setServingCount(recipe.getServingCount());
-        }
+            if (Objects.nonNull(recipe.getServingCount())) {
+                updatedRecipe.setServingCount(recipe.getServingCount());
+            }
 
-        if(Objects.nonNull(recipe.getDishType()) && emptyOrNullOrStringOrBlank(recipe.getDishType())){
-            updatedRecipe.setDishType(recipe.getDishType());
-        }
+            if (Objects.nonNull(recipe.getDishType()) && emptyOrNullOrStringOrBlank(recipe.getDishType())) {
+                updatedRecipe.setDishType(recipe.getDishType());
+            }
 
-        if(Objects.nonNull(recipe.getIngredients()) && !recipe.getIngredients().isEmpty() && !recipe.getIngredients().equals("") && emptyOrNullOrStringOrBlankList(recipe.getIngredients())){
-            updatedRecipe.setIngredients(recipe.getIngredients());
-        }
-        if(Objects.nonNull(recipe.getInstruction()) && !recipe.getInstruction().isEmpty() && emptyOrNullOrStringOrBlankList(recipe.getInstruction())){
-            updatedRecipe.setInstruction(recipe.getInstruction());
-        }
-
-        return repository.save(updatedRecipe);
-
-
+            if (Objects.nonNull(recipe.getIngredients()) && !recipe.getIngredients().isEmpty() && !recipe.getIngredients().equals("") && emptyOrNullOrStringOrBlankList(recipe.getIngredients())) {
+                updatedRecipe.setIngredients(recipe.getIngredients());
+            }
+            if (Objects.nonNull(recipe.getInstruction()) && !recipe.getInstruction().isEmpty() && emptyOrNullOrStringOrBlankList(recipe.getInstruction())) {
+                updatedRecipe.setInstruction(recipe.getInstruction());
+            }
+            return repository.save(updatedRecipe);
     }
 
     @Override
-    public void deleteRecipeById(int id) {
+    public String deleteRecipeById(int id) {
         repository.deleteById(id);
+        return "Recipe Deleted Successfully";
     }
 
     private boolean emptyOrNullOrStringOrBlankList(List<String> list) {
@@ -88,7 +89,12 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void addRecipe(Recipe recipe) {
-        repository.save(recipe);
+    public void addRecipe(Recipe recipe) throws Exception {
+        try {
+            repository.save(recipe);
+        }catch(Exception e){
+            logger.error("Failed to save recipe");
+        }
+
     }
 }

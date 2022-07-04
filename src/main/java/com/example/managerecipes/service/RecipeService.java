@@ -8,11 +8,11 @@ import java.util.List;
 @Component
 public interface RecipeService {
 
-    public void addRecipe(Recipe recipe);
+    public void addRecipe(Recipe recipe) throws Exception;
 
     public Recipe updateRecipe(Recipe recipe);
 
-    public void deleteRecipeById(int id);
+    public String deleteRecipeById(int id);
 
     public List<Recipe> findRecipesByProperties(String dishType, Integer servingCount, String[] ingredients, String[] instruction, String[] excludeIngredients);
 }

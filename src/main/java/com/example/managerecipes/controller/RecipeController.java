@@ -15,7 +15,7 @@ public class RecipeController {
     private RecipeService recipeService;
 
     @PostMapping("/addRecipe")
-    public ResponseEntity addRecipe(@RequestBody Recipe recipe) {
+    public ResponseEntity addRecipe(@RequestBody Recipe recipe) throws Exception {
         recipeService.addRecipe(recipe);
         return new ResponseEntity("Recipes Added Successfully", HttpStatus.OK);
     }
@@ -28,8 +28,8 @@ public class RecipeController {
 
     @DeleteMapping("/deleteRecipeById")
     public ResponseEntity deleteRecipeById(@RequestParam int id) {
-        recipeService.deleteRecipeById(id);
-        return new ResponseEntity("Recipes Deleted Successfully", HttpStatus.OK);
+        String response = recipeService.deleteRecipeById(id);
+        return new ResponseEntity(response , HttpStatus.OK);
     }
 
     @GetMapping("/getRecipes")
